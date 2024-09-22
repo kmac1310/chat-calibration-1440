@@ -52,8 +52,8 @@
 <body>
     <div class="container">
         <h1>1440TIME Calibration</h1>
-        <div id="timerDisplay">Starting in Nanoseconds...</div>
-        <div id="timerUnit">Nanoseconds</div>
+        <div id="timerDisplay">Ready...</div>
+        <div id="timerUnit"></div>
         <button id="startButton">Start Calibration</button>
     </div>
 
@@ -83,15 +83,15 @@
 
         function runCalibration() {
             if (currentStep === 0) {
-                // Nanoseconds phase (simulate for 20 seconds)
+                // Nanoseconds phase (for 20 seconds)
                 timerUnit.innerText = 'Nanoseconds';
                 nanoSound.play();
-                simulateTimer(20000000000, 'nanoseconds', () => {
+                simulateTimer(20000, 'nanoseconds', () => {
                     currentStep = 1;
                     runCalibration();
                 });
             } else if (currentStep === 1) {
-                // Milliseconds phase
+                // Milliseconds phase (for 20 seconds)
                 timerUnit.innerText = 'Milliseconds';
                 milliSound.play();
                 simulateTimer(20000, 'milliseconds', () => {
@@ -99,10 +99,10 @@
                     runCalibration();
                 });
             } else if (currentStep === 2) {
-                // Seconds phase
+                // Seconds phase (for 20 seconds)
                 timerUnit.innerText = 'Seconds';
                 secondSound.play();
-                simulateTimer(20, 'seconds', () => {
+                simulateTimer(20000, 'seconds', () => {
                     startButton.disabled = false;
                     currentStep = 0; // Reset for the next calibration
                 });
@@ -120,9 +120,15 @@
                     clearInterval(interval);
                     callback();
                 } else {
-                    timerDisplay.innerText = timeRemaining;
+                    if (unit === 'nanoseconds') {
+                        timerDisplay.innerText = (timeRemaining * 1000000).toLocaleString();  // Simulate nanoseconds
+                    } else if (unit === 'milliseconds') {
+                        timerDisplay.innerText = (timeRemaining).toLocaleString();  // Milliseconds
+                    } else if (unit === 'seconds') {
+                        timerDisplay.innerText = (timeRemaining / 1000).toFixed(3);  // Seconds (with 3 decimal points for precision)
+                    }
                 }
-            }, 1);
+            }, 1); // Update every 1 millisecond for smooth display
         }
     </script>
 </body>
