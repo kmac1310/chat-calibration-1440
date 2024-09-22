@@ -83,7 +83,7 @@
 
         function runCalibration() {
             if (currentStep === 0) {
-                // Nanoseconds phase (for 20 seconds)
+                // Nanoseconds phase (20 seconds)
                 timerUnit.innerText = 'Nanoseconds';
                 nanoSound.play();
                 simulateTimer(20000, 'nanoseconds', () => {
@@ -91,7 +91,7 @@
                     runCalibration();
                 });
             } else if (currentStep === 1) {
-                // Milliseconds phase (for 20 seconds)
+                // Milliseconds phase (20 seconds)
                 timerUnit.innerText = 'Milliseconds';
                 milliSound.play();
                 simulateTimer(20000, 'milliseconds', () => {
@@ -99,7 +99,7 @@
                     runCalibration();
                 });
             } else if (currentStep === 2) {
-                // Seconds phase (for 20 seconds)
+                // Seconds phase (20 seconds)
                 timerUnit.innerText = 'Seconds';
                 secondSound.play();
                 simulateTimer(20000, 'seconds', () => {
@@ -109,7 +109,7 @@
             }
         }
 
-        // Simulate the timer function
+        // Simulate the timer function and clean up number display for each phase
         function simulateTimer(duration, unit, callback) {
             let startTime = Date.now();
             let interval = setInterval(() => {
@@ -121,14 +121,17 @@
                     callback();
                 } else {
                     if (unit === 'nanoseconds') {
-                        timerDisplay.innerText = (timeRemaining * 1000000).toLocaleString();  // Simulate nanoseconds
+                        let nanoDisplay = Math.floor(timeRemaining * 1000000); // Clean up display for nanoseconds
+                        timerDisplay.innerText = nanoDisplay.toLocaleString();
                     } else if (unit === 'milliseconds') {
-                        timerDisplay.innerText = (timeRemaining).toLocaleString();  // Milliseconds
+                        let milliDisplay = Math.floor(timeRemaining); // Clean up display for milliseconds
+                        timerDisplay.innerText = milliDisplay.toLocaleString();
                     } else if (unit === 'seconds') {
-                        timerDisplay.innerText = (timeRemaining / 1000).toFixed(3);  // Seconds (with 3 decimal points for precision)
+                        let secondDisplay = (timeRemaining / 1000).toFixed(2); // Display seconds with 2 decimal points
+                        timerDisplay.innerText = secondDisplay;
                     }
                 }
-            }, 1); // Update every 1 millisecond for smooth display
+            }, 10); // Smooth updating at every 10 milliseconds for better visual flow
         }
     </script>
 </body>
