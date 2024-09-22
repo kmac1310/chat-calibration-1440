@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>1440TIME Calibration</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 50px;
+        }
+
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            margin-bottom: 20px;
+        }
+
+        #timerDisplay {
+            font-size: 48px;
+            margin-bottom: 10px;
+        }
+
+        #timerUnit {
+            font-size: 24px;
+            color: #888;
+        }
+
+        #startButton {
+            padding: 10px 20px;
+            font-size: 16px;
+            background-color: #28a745;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        #startButton:hover {
+            background-color: #218838;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>1440TIME Calibration</h1>
+        <div id="timerDisplay">Starting in Nanoseconds...</div>
+        <div id="timerUnit">Nanoseconds</div>
+        <button id="startButton">Start Calibration</button>
+    </div>
+
+    <!-- Sound files for different phases -->
+    <audio id="nanoSound" src="https://freesound.org/data/previews/351/351566_4939433-lq.mp3"></audio> <!-- Replace with your own sounds -->
+    <audio id="milliSound" src="https://freesound.org/data/previews/351/351565_4939433-lq.mp3"></audio> <!-- Replace with your own sounds -->
+    <audio id="secondSound" src="https://freesound.org/data/previews/351/351563_4939433-lq.mp3"></audio> <!-- Replace with your own sounds -->
+
+    <script>
+        // Sound elements
+        const nanoSound = document.getElementById('nanoSound');
+        const milliSound = document.getElementById('milliSound');
+        const secondSound = document.getElementById('secondSound');
+
+        // Timer elements
+        const timerDisplay = document.getElementById('timerDisplay');
+        const timerUnit = document.getElementById('timerUnit');
+        const startButton = document.getElementById('startButton');
+
+        let currentStep = 0;
+
+        // Start the calibration process
+        startButton.addEventListener('click', function() {
+            startButton.disabled = true;
+            runCalibration();
+        });
+
+        function runCalibration() {
+            if (currentStep === 0) {
+                // Nanoseconds phase (simulate for 20 seconds)
+                timerUnit.innerText = 'Nanoseconds';
+                nanoSound.play();
+                simulateTimer(20000000000, 'nanoseconds', () => {
+                    currentStep = 1;
+                    runCalibration();
+                });
+            } else if (currentStep === 1) {
+                // Milliseconds phase
+                timerUnit.innerText = 'Milliseconds';
+                milliSound.play();
+                simulateTimer(20000, 'milliseconds', () => {
+                    currentStep = 2;
+                    runCalibration();
+                });
+            } else if (currentStep === 2) {
+                // Seconds phase
+                timerUnit.innerText = 'Seconds';
+                secondSound.play();
+                simulateTimer(20, 'seconds', () => {
+                    startButton.disabled = false;
+                    currentStep = 0; // Reset for the next calibration
+                });
+            }
+        }
+
+        // Simulate the timer function
+        function simulateTimer(duration, unit, callback) {
+            let startTime = Date.now();
+            let interval = setInterval(() => {
+                let elapsed = Date.now() - startTime;
+                let timeRemaining = duration - elapsed;
+
+                if (timeRemaining <= 0) {
+                    clearInterval(interval);
+                    callback();
+                } else {
+                    timerDisplay.innerText = timeRemaining;
+                }
+            }, 1);
+        }
+    </script>
+</body>
+</html>
